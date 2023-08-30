@@ -1,9 +1,7 @@
 import { CalculusService } from './calculus.service'
-import {
-    CalculationHistoryResponse,
-    transformCalculationToResponse,
-} from './calculus.domain'
 import { CalculusRepository } from './calculus.repository'
+import { GetCalculationHistoryResponse } from './DTO/getCalculationHistoryResponse'
+import { mapCalculationToResponse } from './DTO/mapCalculationToResponse'
 
 describe('CalculusService', () => {
     let service: CalculusService
@@ -34,8 +32,8 @@ describe('CalculusService', () => {
     })
 
     describe('getLastCalculations', () => {
-        it('should return last 5 calculations', () => {
-            const expectedResult: CalculationHistoryResponse = []
+        it('should return 5 latest calculations', () => {
+            const expectedResult: GetCalculationHistoryResponse = []
 
             for (let i = 0; i < 5; i++) {
                 const query = `${i}+1`
@@ -45,22 +43,18 @@ describe('CalculusService', () => {
                 if (i > 0) {
                     expectedResult.push({
                         query,
-                        response: transformCalculationToResponse(calculation),
+                        response: mapCalculationToResponse(calculation),
                     })
                 }
             }
 
-            try {
-                const queryWithError = '1/0'
-                const calculation = service.generateCalculation(queryWithError)
+            const queryWithError = '1/0'
+            const calculation = service.generateCalculation(queryWithError)
 
-                expectedResult.push({
-                    query: queryWithError,
-                    response: transformCalculationToResponse(calculation),
-                })
-            } catch (e) {
-                console.log(e)
-            }
+            expectedResult.push({
+                query: queryWithError,
+                response: mapCalculationToResponse(calculation),
+            })
 
             const result = service.getCalculationHistory()
 

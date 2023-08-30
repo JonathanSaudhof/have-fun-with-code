@@ -1,11 +1,10 @@
 import { Injectable } from '@nestjs/common'
 import { Parser as FormularParser, Parser } from 'hot-formula-parser'
-import { Calculation } from './calculus.domain'
+import { Calculation } from './calculation'
 import { CalculusRepository } from './calculus.repository'
 
 @Injectable()
 export class CalculusService {
-    private
     private readonly formulaParser: Parser = null
 
     constructor(private readonly calculusRepository: CalculusRepository) {

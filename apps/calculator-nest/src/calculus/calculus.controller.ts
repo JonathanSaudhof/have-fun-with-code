@@ -1,13 +1,10 @@
 import { BadRequestException, Controller, Get, Query } from '@nestjs/common'
 import { CalculusService } from './calculus.service'
-
-import {
-    CalculationHistoryResponse,
-    CalculationQuery,
-    CalculationQueryResponse,
-    transformCalculationToResponse,
-} from './calculus.domain'
 import { decodeBase64ToUtf8 } from '@coding-challenges/shared/utils'
+import { GetCalculationQuery } from './DTO/getCalculationQuery'
+import { mapCalculationToResponse } from './DTO/mapCalculationToResponse'
+import { GetCalculationHistoryResponse } from './DTO/getCalculationHistoryResponse'
+import { GetCalculationQueryResponse } from './DTO/getCalculationResponse'
 
 @Controller('calculus')
 export class CalculusController {
@@ -15,8 +12,8 @@ export class CalculusController {
 
     @Get()
     getCalculation(
-        @Query() queryParams: CalculationQuery
-    ): CalculationQueryResponse {
+        @Query() queryParams: GetCalculationQuery
+    ): GetCalculationQueryResponse {
         const { query } = queryParams
 
         let decodedQuery
@@ -32,11 +29,11 @@ export class CalculusController {
         const calculation =
             this.calculusService.generateCalculation(decodedQuery)
 
-        return transformCalculationToResponse(calculation)
+        return mapCalculationToResponse(calculation)
     }
 
     @Get('history')
-    getHistory(): CalculationHistoryResponse {
+    getHistory(): GetCalculationHistoryResponse {
         return this.calculusService.getCalculationHistory()
     }
 }
